@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tomato Leaf Disease Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Tomato Leaf Disease Detection</h1>
+    <form enctype="multipart/form-data" action="/upload" method="post">
+        <input type="file" name="image" accept="image/*" required>
+        <input type="submit" value="Upload and Classify">
+    </form>
+    <div id="result" style="display: none;">
+        <h2>Result:</h2>
+        <p id="class-label"></p>
+        <p id="confidence"></p>
+        <button id="clear-button">Clear Output</button>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('image', document.querySelector('input[type="file"]').files[0]);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('class-label').textContent = `Class: ${data.Class}`;
+                document.getElementById('confidence').textContent = `Confidence: ${data.Confidence.toFixed(2)}%`;
+                document.getElementById('result').style.display = 'block';
+            } else {
+                alert('Failed to classify the image.');
+            }
+        });
+
+        document.getElementById('clear-button').addEventListener('click', () => {
+            document.getElementById('result').style.display = 'none';
+            document.querySelector('input[type="file"]').value = ''; // Clear the file input
+        });
+    </script>
+</body>
+</html>
