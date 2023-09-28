@@ -8,7 +8,7 @@ Step 1:
 Data augmentation is done with operations like rescaling, rotation and horizontal flip.
 
 step 2:
-resize the image with dimension (28,28,3)
+resize the image with dimension (28,28)
 
 Model Building keypoints:
 1. Batch normalization is applied to normalize the activations of the previous layer. It helps improve training stability and speed. 
