@@ -39,7 +39,8 @@ Client (Browser)
  Background Worker (Inference Engine)
       │ 
       ▼ 
- Versioned ML Models (H5/SavedModel)
+ Versioned ML Models (H5/SavedModel
+ 
 📁 Project StructurePlaintextml-inference-system/
 │
 ├── app/                    # FastAPI application
@@ -72,10 +73,61 @@ Client (Browser)
 ├── docker-compose.yml      # Multi-service orchestration
 ├── requirements.txt        # Python dependencies
 └── README.md               # Project documentation
-🔀 Model Versioning & A/B TestingModels are stored in versioned directories (v1, v2). The system allows routing traffic to different model versions to enable:Performance comparison in real-world scenarios.Accuracy vs. Latency trade-off analysis.Safe experiments without exposing internal versioning to the end-user.Example Internal Loader:Pythonmodel_v1 = load_model("models/v1/Tomato_model_v1.h5")
+
+🔀 Model Versioning & A/B TestingModels are stored in versioned directories (v1, v2). The system allows routing traffic to different model versions to enable:
+       Performance comparison in real-world scenarios.
+       Accuracy vs. Latency trade-off analysis.
+       Safe experiments without exposing internal versioning to the end-user.
+
+Example Internal Loader:
+model_v1 = load_model("models/v1/Tomato_model_v1.h5")
 model_v2 = load_model("models/v2/Tomato_model_v2.h5")
-⚙️ How Inference WorksUpload: User uploads an image via the UI or API.Enqueue: FastAPI receives the file and enqueues a task into Redis.Process: The Worker picks up the task, performs preprocessing, and runs inference.Result: The prediction result is returned asynchronously or stored for retrieval.Benefits: Prevents API timeouts, supports high concurrency, and allows horizontal scaling of workers.🌐 NGINX Reverse ProxyNGINX acts as the gateway, routing traffic to the internal API and serving as a foundation for future SSL termination and load balancing.Nginxlocation / {
+
+
+⚙️ How Inference WorksUpload:
+       User uploads an image via the UI or API.
+       Enqueue: FastAPI receives the file and enqueues a task into Redis.
+       Process: The Worker picks up the task, performs preprocessing, and runs inference.
+       Result: The prediction result is returned asynchronously or stored for retrieval.
+       Benefits: Prevents API timeouts, supports high concurrency, and allows horizontal scaling of workers.
+
+
+🌐 NGINX Reverse ProxyNGINX acts as the gateway, routing traffic to the internal API and serving as a foundation for future SSL termination and load balancing.
+
+Nginx
+location / {
     proxy_pass http://api:8000;
 }
-🐳 Dockerized DeploymentServicesServicePurposeapiHandles HTTP requests and task delegation.workerPerforms heavy ML inference.redisActs as the message broker (Queue).nginxReverse proxy and static file server.▶️ How to RunPrerequisites: Docker & Docker Compose installed.Clone the repoStart the system:Bashdocker-compose up --build
-Access the application:Frontend: http://localhostAPI Docs: http://localhost/docs🔐 Production-Safe Design Decisionscompile=False: Used during model loading to save memory and avoid training overhead.Decoupled Architecture: Training code is kept strictly separate from the inference pipeline.Statelessness: The API layer can be scaled infinitely as it holds no state.👨‍💻 AuthorArindam Das - Machine Learning / AI EngineerThis project demonstrates expertise in ML System Design, Production Deployment, and an End-to-End Ownership mindset.⭐ If you find this project useful, please consider giving it a star!
+
+🐳 Dockerized Deployment
+Service,Purpose
+api,Handles HTTP requests and task delegation.
+worker,Performs heavy ML inference.
+redis,Acts as the message broker (Queue).
+nginx,Reverse proxy and static file server.
+
+
+▶️ How to Run
+Prerequisites: Docker & Docker Compose installed.
+   1. Clone the repo
+   2. Start the system:
+            docker-compose up --build
+
+   3. Access the application:
+           Frontend: http://localhost
+           API Docs: http://localhost/docs
+
+
+🔐 Production-Safe Design Decisions
+        compile=False: Used during model loading to save memory and avoid training overhead.
+        Decoupled Architecture: Training code is kept strictly separate from the inference pipeline.
+        Statelessness: The API layer can be scaled infinitely as it holds no state.
+
+
+👨‍💻 Author
+Arindam Das - Machine Learning / AI Engineer
+This project demonstrates expertise in ML System Design, Production Deployment, and an End-to-End Ownership mindset.
+
+
+⭐ If you find this project useful, please consider giving it a star!
+
