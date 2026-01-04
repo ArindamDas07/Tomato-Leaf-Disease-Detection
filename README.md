@@ -1,190 +1,98 @@
-Production-Ready ML Inference System with A/B Testing
+ML Inference System with A/B Testing
 
-This repository contains a production-grade machine learning inference system for image classification, designed with scalability, reliability, and experimentation (A/B testing) in mind.
+A production-ready machine learning inference system for image classification, built to demonstrate real-world ML deployment, asynchronous inference, and model A/B testing.
 
-The system serves deep learning models for Tomato Leaf Disease Detection using a Dockerized microservices architecture, following real-world ML deployment practices.
+This project serves deep learning models for Tomato Leaf Disease Detection using a Dockerized microservices architecture.
 
-Overview
+What This Project Demonstrates
 
-Problem
-Deploy deep learning models in a way that supports:
+End-to-end ML system design (training → deployment)
 
-.Concurrent users
+Model versioning and A/B testing
 
-.Asynchronous inference
+Asynchronous inference using Redis
 
-.Model versioning and experimentation
+Scalable API + worker architecture
 
-.Clean separation between training and production
+Production-grade Docker deployment
 
-Solution
-A containerized inference system using:
-
-.FastAPI for request handling
-
-.Redis for task queuing
-
-.Background workers for inference
-
-.NGINX as a reverse proxy
-
-.Versioned ML models for A/B testing
-
-Key Features
-
-.Versioned ML models (v1, v2) for A/B testing
-
-.Asynchronous inference using Redis
-
-.FastAPI-based REST API
-
-.Background worker architecture (non-blocking)
-
-.Docker & Docker Compose for deployment
-
-.NGINX reverse proxy
-
-.Web UI for image upload and prediction
-
-.Clear separation of training and inference code
-
-.Production-safe model loading
-
-System Architecture
+Architecture Overview
 Client (Browser)
-        |
-        v
-      NGINX
-        |
-        v
-   FastAPI API
-        |
-        v
-   Redis Task Queue
-        |
-        v
- Background Worker
-        |
-        v
-   Versioned ML Model
-   
+   ↓
+NGINX (Reverse Proxy)
+   ↓
+FastAPI (API Layer)
+   ↓
+Redis (Task Queue)
+   ↓
+Worker (Inference)
+   ↓
+Versioned ML Models
 
-Project Structure
+Tech Stack
+Layer	Technology
+API	FastAPI
+Inference	TensorFlow / Keras
+Queue	Redis
+Reverse Proxy	NGINX
+Deployment	Docker, Docker Compose
+Frontend	HTML, CSS
+Repository Structure
 ml-inference-system/
 │
-├── app/                     # FastAPI application
-│   ├── main.py              # API routes and request handling
-│   ├── model.py             # Versioned model loader
-│   ├── preprocess.py        # Image preprocessing logic
-│   ├── tasks.py             # Redis task enqueue logic
-│   ├── redis_conn.py        # Redis connection configuration
+├── app/                 # FastAPI application
+├── worker/              # Background inference worker
+├── models/              # Versioned ML models (v1, v2)
+├── templates/           # Frontend HTML
+├── static/              # CSS assets
+├── nginx/               # NGINX configuration
 │
-├── worker/                  # Background inference service
-│   └── worker.py
-│
-├── models/                  # Versioned trained models
-│   ├── v1/
-│   │   └── Tomato_model_v1.h5
-│   └── v2/
-│       └── Tomato_model_v2.h5
-│
-├── templates/               # Frontend HTML
-│   └── index.html
-│
-├── static/                  # Frontend styling
-│   └── style.css
-│
-├── nginx/                   # Reverse proxy configuration
-│   └── nginx.conf
-│
-├── Dockerfile.api           # FastAPI container
-├── Dockerfile.worker        # Worker container
-├── docker-compose.yml       # Multi-service orchestration
+├── Dockerfile.api
+├── Dockerfile.worker
+├── docker-compose.yml
 ├── requirements.txt
 └── README.md
 
-
 Model Versioning & A/B Testing
 
-.Models are stored in versioned directories (v1, v2)
+Two independently trained CNN models:
 
-.Traffic can be split between models programmatically
+v1 – 96% accuracy
 
-.Enables safe experimentation without impacting users
+v2 – 94% accuracy
 
-.Model version is never exposed to the frontend
+Same architecture, different filter sizes
 
-Example:
+Traffic is dynamically routed to models
 
-load_model("v1")
-load_model("v2")
+Model versions are not exposed to users
 
+Purpose:
 
+Compare accuracy vs inference behavior
 
-This design allows:
+Enable safe experimentation in production
 
-.Accuracy comparison
+Inference Flow
 
-.Architecture experimentation
+User uploads an image
 
-.Controlled production rollout
+API enqueues task to Redis
 
+Worker processes inference
 
-Inference Workflow
+Prediction is returned asynchronously
 
-1.User uploads an image via the UI or API
+Why this matters
 
-2.FastAPI enqueues the request to Redis
+API never blocks
 
-3.Background worker processes the task
+Handles concurrent requests
 
-4.Model performs inference
+Worker layer can scale independently
 
-5.Prediction (disease + confidence score) is returned
-
-Why this matters:
-
-API remains responsive
-
-Supports concurrent requests
-
-Scales independently of inference workload
-
-NGINX Reverse Proxy
-
-NGINX serves as the entry point to the system:
-
-Routes traffic to FastAPI
-
-Decouples client access from internal services
-
-Enables future SSL, rate limiting, or load balancing
-
-Example configuration:
-
-location / {
-    proxy_pass http://api:8000;
-}
-
-Dockerized Deployment
-Why Docker?
-
-Environment consistency
-
-Reproducible builds
-
-Production isolation
-
-Easy scaling
-
-Services
-Service	Responsibility
-api	Handles HTTP requests
-worker	Performs model inference
-redis	Task queue
-nginx	Reverse proxy
 Running the System
-Prerequisites
+Requirements
 
 Docker
 
@@ -197,76 +105,71 @@ Access
 
 Web UI: http://localhost
 
-API docs: http://localhost/docs
+API Docs: http://localhost/docs
 
-No virtual environment setup is required.
-All dependencies are handled inside containers.
+No virtual environment setup required.
 
-Production Design Considerations
+Training Details
 
-Models loaded with compile=False
+Training is intentionally separated from inference.
 
-Stateless API layer
+Dataset: Kaggle Tomato Leaf Disease Dataset
 
-Asynchronous task processing
+Images: 18,345
 
-Version-controlled models
+Classes: 10
 
-Training code excluded from runtime inference
+Optimizer: Adam
 
-Performance & Scalability
+Loss: Sparse Categorical Crossentropy
 
-Supports concurrent inference requests
+Regularization:
 
-Workers can be scaled horizontally
+Batch Normalization
 
-Redis provides fault-tolerant task handling
+Dropout
 
-Architecture is Kubernetes-ready
+Early Stopping
 
-Cloud deployable (AWS / GCP / Azure)
+Training notebooks are available in the training/ directory.
 
-Training Pipeline
+Production Design Decisions
 
-Model training is deliberately separated from inference.
+Stateless API
 
-The training directory includes:
+Background inference workers
 
-Dataset source
+Redis-based task queue
 
-Training notebooks
+compile=False for safe model loading
 
-Architecture details
+No training code in runtime containers
 
-Accuracy metrics
+Scalability & Extensibility
 
-This ensures production code remains clean and lightweight.
+Supports concurrent users
+
+Horizontal scaling via workers
+
+Kubernetes-ready architecture
+
+Easily deployable to cloud platforms
 
 Author
 
 Arindam Das
 Machine Learning / AI Engineer
 
-This project demonstrates:
+This project showcases practical ML system design beyond model training.
 
-End-to-end ML system design
+Why This Project
 
-Production deployment practices
+Most ML projects stop at accuracy.
 
-Model experimentation via A/B testing
+This one shows:
 
-Strong separation of concerns between training and serving
+How models are served
 
-Why This Project Matters
+How experiments are run safely
 
-This repository goes beyond model training.
-
-It demonstrates how machine learning systems are:
-
-Deployed in production
-
-Scaled under load
-
-Experimented safely
-
-Integrated with real infrastructure
+How ML systems scale in production
