@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tomato Leaf Disease Detection</title>
+
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- ============================= -->
+    <!-- PAGE CONTAINER -->
+    <!-- ============================= -->
+    <div class="container">
+
+        <h1>🍅 Tomato Leaf Disease Detection</h1>
+        <p class="subtitle">
+            Upload a tomato leaf image to detect disease using AI
+        </p>
+
+        <!-- ============================= -->
+        <!-- IMAGE UPLOAD FORM -->
+        <!-- ============================= -->
+        <form id="upload-form">
+
+            <!-- File Input -->
+            <input 
+                type="file" 
+                id="image-input" 
+                accept="image/*" 
+                required
+            >
+
+            <!-- Image Preview -->
+            <div class="preview-container">
+                <img id="preview-image" alt="Image Preview">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Predict Disease</button>
+        </form>
+
+        <!-- ============================= -->
+        <!-- RESULT SECTION -->
+        <!-- ============================= -->
+        <div id="result" class="result hidden">
+            <h2>Prediction Result</h2>
+            <p><strong>Disease:</strong> <span id="disease"></span></p>
+            <p><strong>Confidence:</strong> <span id="confidence"></span>%</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" class="error hidden"></div>
+
+    </div>
+
+    <!-- ============================= -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ============================= -->
+    <script>
+        const form = document.getElementById("upload-form");
+        const imageInput = document.getElementById("image-input");
+        const previewImage = document.getElementById("preview-image");
+        const resultDiv = document.getElementById("result");
+        const errorDiv = document.getElementById("error");
+
+        /* ---------------------------------
+           IMAGE PREVIEW (UX IMPROVEMENT)
+        ----------------------------------*/
+        imageInput.addEventListener("change", () => {
+            const file = imageInput.files[0];
+            if (!file) return;
+
+            // Validate image type
+            if (!file.type.startsWith("image/")) {
+                showError("Please upload a valid image file.");
+                imageInput.value = "";
+                return;
+            }
+
+            previewImage.src = URL.createObjectURL(file);
+            previewImage.style.display = "block";
+        });
+
+        /* ---------------------------------
+           FORM SUBMISSION
+        ----------------------------------*/
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const file = imageInput.files[0];
+            if (!file) {
+                showError("No image selected.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || "Prediction failed");
+                }
+
+                const data = await response.json();
+
+                document.getElementById("disease").textContent = data.disease;
+                document.getElementById("confidence").textContent = data.confidence;
+           
+
+                resultDiv.classList.remove("hidden");
+                errorDiv.classList.add("hidden");
+
+            } catch (err) {
+                showError(err.message);
+            }
+        });
+
+        /* ---------------------------------
+           ERROR HANDLING (FRONTEND)
+        ----------------------------------*/
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.classList.remove("hidden");
+            resultDiv.classList.add("hidden");
+        }
+    </script>
+
+</body>
+</html>
