@@ -1,73 +1,100 @@
-🚀 Production-Ready ML Inference System with A/B Testing
+Production-Ready ML Inference System with A/B Testing
 
-This repository implements a production-grade machine learning inference system designed for scalability, reliability, and controlled experimentation (A/B testing).
+This repository contains a production-grade machine learning inference system for image classification, designed with scalability, reliability, and experimentation (A/B testing) in mind.
 
-The system serves deep learning image classification models for Tomato Leaf Disease Detection using a Dockerized microservices architecture.
+The system serves deep learning models for Tomato Leaf Disease Detection using a Dockerized microservices architecture, following real-world ML deployment practices.
 
-🧠 Key Features
+Overview
 
-✅ Versioned ML models (A/B testing ready)
+Problem
+Deploy deep learning models in a way that supports:
 
-✅ Asynchronous inference with Redis
+.Concurrent users
 
-✅ FastAPI-based REST API
+.Asynchronous inference
 
-✅ Background worker for model inference
+.Model versioning and experimentation
 
-✅ NGINX reverse proxy
+.Clean separation between training and production
 
-✅ Docker & Docker Compose orchestration
+Solution
+A containerized inference system using:
 
-✅ Frontend UI for image upload
+.FastAPI for request handling
 
-✅ Separation of training & inference
+.Redis for task queuing
 
-✅ Production-safe model loading
+.Background workers for inference
 
-🏗️ System Architecture
+.NGINX as a reverse proxy
+
+.Versioned ML models for A/B testing
+
+Key Features
+
+.Versioned ML models (v1, v2) for A/B testing
+
+.Asynchronous inference using Redis
+
+.FastAPI-based REST API
+
+.Background worker architecture (non-blocking)
+
+.Docker & Docker Compose for deployment
+
+.NGINX reverse proxy
+
+.Web UI for image upload and prediction
+
+.Clear separation of training and inference code
+
+.Production-safe model loading
+
+System Architecture
 Client (Browser)
-        │
-        ▼
-     NGINX
-        │
-        ▼
+        |
+        v
+      NGINX
+        |
+        v
    FastAPI API
-        │
-        ▼
-     Redis Queue
-        │
-        ▼
+        |
+        v
+   Redis Task Queue
+        |
+        v
  Background Worker
-        │
-        ▼
+        |
+        v
    Versioned ML Model
+   
 
-📁 Project Structure
+Project Structure
 ml-inference-system/
 │
 ├── app/                     # FastAPI application
-│   ├── main.py              # API endpoints
+│   ├── main.py              # API routes and request handling
 │   ├── model.py             # Versioned model loader
-│   ├── preprocess.py        # Image preprocessing
-│   ├── tasks.py             # Task enqueue logic
-│   ├── redis_conn.py        # Redis connection
+│   ├── preprocess.py        # Image preprocessing logic
+│   ├── tasks.py             # Redis task enqueue logic
+│   ├── redis_conn.py        # Redis connection configuration
 │
-├── worker/                  # Background inference worker
+├── worker/                  # Background inference service
 │   └── worker.py
 │
-├── models/                  # Versioned ML models
+├── models/                  # Versioned trained models
 │   ├── v1/
 │   │   └── Tomato_model_v1.h5
 │   └── v2/
 │       └── Tomato_model_v2.h5
 │
-├── templates/               # Frontend UI
+├── templates/               # Frontend HTML
 │   └── index.html
 │
-├── static/
+├── static/                  # Frontend styling
 │   └── style.css
 │
-├── nginx/                   # Reverse proxy
+├── nginx/                   # Reverse proxy configuration
 │   └── nginx.conf
 │
 ├── Dockerfile.api           # FastAPI container
@@ -76,171 +103,170 @@ ml-inference-system/
 ├── requirements.txt
 └── README.md
 
-🔀 Model Versioning & A/B Testing
 
-Models are stored in versioned directories (v1, v2)
+Model Versioning & A/B Testing
 
-Same API endpoint can route traffic to different models
+.Models are stored in versioned directories (v1, v2)
 
-Enables:
+.Traffic can be split between models programmatically
 
-Performance comparison
+.Enables safe experimentation without impacting users
 
-Accuracy vs latency trade-offs
+.Model version is never exposed to the frontend
 
-Safe production experiments
-
-Example loader:
+Example:
 
 load_model("v1")
 load_model("v2")
 
 
-👉 Model version is never exposed to frontend users
 
-⚙️ How Inference Works
+This design allows:
 
-User uploads an image via UI or API
+.Accuracy comparison
 
-FastAPI enqueues request to Redis
+.Architecture experimentation
 
-Worker picks up the task asynchronously
+.Controlled production rollout
 
-Model performs inference
 
-Prediction is returned to the user
+Inference Workflow
 
-This design:
+1.User uploads an image via the UI or API
 
-Prevents API blocking
+2.FastAPI enqueues the request to Redis
+
+3.Background worker processes the task
+
+4.Model performs inference
+
+5.Prediction (disease + confidence score) is returned
+
+Why this matters:
+
+API remains responsive
 
 Supports concurrent requests
 
-Scales horizontally
+Scales independently of inference workload
 
-🌐 NGINX Reverse Proxy
+NGINX Reverse Proxy
 
-NGINX:
+NGINX serves as the entry point to the system:
 
 Routes traffic to FastAPI
 
-Acts as a single entry point
+Decouples client access from internal services
 
-Enables future SSL / load balancing
+Enables future SSL, rate limiting, or load balancing
+
+Example configuration:
 
 location / {
     proxy_pass http://api:8000;
 }
 
-🐳 Dockerized Deployment
+Dockerized Deployment
 Why Docker?
 
 Environment consistency
 
+Reproducible builds
+
+Production isolation
+
 Easy scaling
 
-Production-ready isolation
-
 Services
-Service	Purpose
+Service	Responsibility
 api	Handles HTTP requests
-worker	Performs ML inference
-redis	Message queue
+worker	Performs model inference
+redis	Task queue
 nginx	Reverse proxy
-▶️ How to Run (Production Mode)
+Running the System
 Prerequisites
 
 Docker
 
 Docker Compose
 
-Start the system
+Start all services
 docker-compose up --build
 
-Access the app
+Access
 
-Frontend: http://localhost
+Web UI: http://localhost
 
-API: http://localhost/docs
+API docs: http://localhost/docs
 
-❌ No virtual environment required
-❌ No manual dependency installation
+No virtual environment setup is required.
+All dependencies are handled inside containers.
 
-📦 Requirements
-Python 3.10
-TensorFlow
-FastAPI
-Redis
-Uvicorn
-Pillow
-NumPy
+Production Design Considerations
 
-
-All dependencies are handled inside Docker containers.
-
-🔐 Production-Safe Design Decisions
-
-compile=False when loading models
-
-Background inference workers
+Models loaded with compile=False
 
 Stateless API layer
 
+Asynchronous task processing
+
 Version-controlled models
 
-No training code inside inference pipeline
+Training code excluded from runtime inference
 
-📈 Performance & Scalability
+Performance & Scalability
 
-Handles concurrent requests
+Supports concurrent inference requests
 
-Worker pool can be horizontally scaled
+Workers can be scaled horizontally
 
-Redis ensures fault-tolerant task handling
+Redis provides fault-tolerant task handling
 
-Easily extendable to:
+Architecture is Kubernetes-ready
 
-Kubernetes
+Cloud deployable (AWS / GCP / Azure)
 
-Cloud deployment (AWS / GCP / Azure)
+Training Pipeline
 
-🧪 Training Pipeline
+Model training is deliberately separated from inference.
 
-Training notebooks are intentionally separated from production inference code.
+The training directory includes:
 
-📂 See /training directory for:
+Dataset source
 
-Dataset link
+Training notebooks
 
-Model architectures
-
-Training details
+Architecture details
 
 Accuracy metrics
 
-👨‍💻 Author
+This ensures production code remains clean and lightweight.
+
+Author
 
 Arindam Das
 Machine Learning / AI Engineer
 
 This project demonstrates:
 
-ML system design
+End-to-end ML system design
 
-Production deployment
+Production deployment practices
 
-A/B testing mindset
+Model experimentation via A/B testing
 
-End-to-end ML ownership
+Strong separation of concerns between training and serving
 
-⭐ Why This Project Matters
+Why This Project Matters
 
-This is not just a CNN model.
+This repository goes beyond model training.
 
-It is a real-world ML system showing:
+It demonstrates how machine learning systems are:
 
-How models are served in production
+Deployed in production
 
-How experiments are run safely
+Scaled under load
 
-How ML meets DevOps
+Experimented safely
+
+Integrated with real infrastructure
