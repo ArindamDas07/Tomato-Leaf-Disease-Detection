@@ -21,17 +21,14 @@ This project serves deep learning CNN models for **Tomato Leaf Disease Detection
 ## 🏗️ System Architecture
 
 ```
-Client (Browser)
-   ↓
-NGINX (Reverse Proxy)
-   ↓
-FastAPI (API Layer)
-   ↓
-Redis (Task Queue)
-   ↓
-Background Worker
-   ↓
-Versioned ML Models
+Client → NGINX → FastAPI (API) → Redis (Queue)
+                                ↓
+                           Worker (Inference)
+                                ↓
+                             Redis (Result)
+                                ↓
+                             API → Client
+
 ```
 
 ---
