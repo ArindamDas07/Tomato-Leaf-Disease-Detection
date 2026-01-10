@@ -1,0 +1,113 @@
+/* ================================
+   GLOBAL STYLES
+================================ */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+    padding: 0;
+}
+
+/* ================================
+   MAIN CONTAINER
+================================ */
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* ================================
+   HEADINGS
+================================ */
+h1 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* ================================
+   FORM
+================================ */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="file"] {
+    padding: 8px;
+}
+
+/* ================================
+   IMAGE PREVIEW
+================================ */
+.preview-container {
+    margin-top: 10px;
+}
+
+#preview-image {
+    display: none;
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* ================================
+   BUTTON
+================================ */
+button {
+    padding: 12px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #219150;
+}
+
+/* ================================
+   RESULT SECTION
+================================ */
+.result {
+    margin-top: 25px;
+    background: #ecf9f1;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #c8e6c9;
+}
+
+.result h2 {
+    margin-top: 0;
+    color: #2e7d32;
+}
+
+/* ================================
+   ERROR MESSAGE
+================================ */
+.error {
+    margin-top: 20px;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* ================================
+   UTILITIES
+================================ */
+.hidden {
+    display: none;
+}
