@@ -1,8 +1,0 @@
-fastapi
-uvicorn
-redis
-pillow
-numpy
-tensorflow
-jinja2
-python-multipart
