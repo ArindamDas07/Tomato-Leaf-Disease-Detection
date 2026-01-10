@@ -1,0 +1,9 @@
+FROM python:3.10
+
+WORKDIR /app
+COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# ✅ Fixed CMD to point to tasks so Celery registers them
+CMD ["celery", "-A", "app.tasks", "worker", "--loglevel=info"]
