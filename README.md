@@ -6,6 +6,7 @@ A **production-ready deep learning system** for tomato leaf disease classificati
 
 This project goes beyond notebooks and demonstrates **how ML models are deployed, served, and scaled in real-world systems**.
 
+full project link: https://drive.google.com/file/d/1EO4EtdX29fjVBu_rGsPzEiQfZQEpdKWf/view?usp=sharing
 ---
 
 ## 🚀 Key Features
