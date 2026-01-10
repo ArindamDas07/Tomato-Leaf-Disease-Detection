@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: api
+    depends_on:
+      - redis
+    expose:
+      - "8000"   # 👈 exposed only to nginx, not public
+    restart: always
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: worker
+    depends_on:
+      - redis
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"   # 👈 public entry point
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    restart: always
