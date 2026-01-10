@@ -20,7 +20,7 @@ This project goes beyond notebooks and demonstrates **how ML models are deployed
 * ✅ Web UI for image upload and result visualization
 
 ---
-
+Full project link: https://drive.google.com/file/d/1jCSxlNwR3cPbf6a4r9JyP89pGIKZOVEB/view?usp=sharing
 ## 📂 Dataset Overview
 
 The models were trained on a tomato leaf disease dataset containing **10 classes**.
