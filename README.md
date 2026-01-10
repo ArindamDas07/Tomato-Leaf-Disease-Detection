@@ -81,6 +81,7 @@ Both models are used as **feature extractors** with a **custom fully connected c
 
 ### 🔄 End-to-End Inference Flow
 ---
+```text
 User (Browser / Client)
         |
         | Upload Image
@@ -110,6 +111,7 @@ FastAPI API
 Frontend UI (Browser)
   ├─ Display Disease
   └─ Display Confidence
+
 
 ---
 
