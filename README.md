@@ -81,7 +81,7 @@ Both models are used as **feature extractors** with a **custom fully connected c
 
 ### 🔄 End-to-End Inference Flow
 
-```text
+---
 User (Browser / Client)
         |
         | Upload Image
@@ -112,9 +112,7 @@ Frontend UI (Browser)
   ├─ Display Disease
   └─ Display Confidence
 
-
-
-
+---
 ### 📌 Architecture Notes
 
 - The **frontend never communicates directly with Redis**
