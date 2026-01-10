@@ -80,7 +80,7 @@ Both models are used as **feature extractors** with a **custom fully connected c
 ## ⚙️ Production Architecture
 
 ### 🔄 End-to-End Inference Flow
----
+
 ```text
 User (Browser / Client)
         |
@@ -113,7 +113,7 @@ Frontend UI (Browser)
   └─ Display Confidence
 
 
----
+
 
 ### 📌 Architecture Notes
 
