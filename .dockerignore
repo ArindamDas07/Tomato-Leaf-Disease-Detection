@@ -1,0 +1,28 @@
+# --- Deep Learning Data (Huge files) ---
+training/
+datasets/
+# Keep 'models/' OUT of this file so Dockerfile.worker can copy them
+
+# --- Local Staging Area ---
+# Prevents local test images from bloating the production image
+uploads/
+
+# --- Python Artifacts ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+
+# --- Development & Security ---
+*.ipynb
+.git
+.gitignore
+.env
+README.md
+
+# --- OS Junk ---
+.DS_Store
+Thumbs.db
