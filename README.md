@@ -13,7 +13,7 @@ This project is an end-to-end Computer Vision MLOps system. It transitions from 
 
 ### 🌟 Key MLOps Features:
 
-- 🛡️ Multi-Stage Pipeline: Features a lightweight MobileNetV2 Gatekeeper that filters out non-tomato images, reducing heavy classification costs by ~60%.
+- 🛡️ Multi-Stage Pipeline: Features a lightweight MobileNetV2 Gatekeeper that filters out non-tomato images, reducing heavy classification compute costs.
 - ⚖️ Production A/B Testing: Implements weighted random routing (70/30) between EfficientNetB0 (Challenger) and ResNet50 (Champion) to compare performance in real-time.
 - 📉 Automated Data Drift Tracking: Monitors Brightness, Contrast, and RGB channels of every live upload against a baseline of 18,339 training samples.
 - ⚡ Decoupled Scaling: A lightweight FastAPI gateway (no-ML build) handles ingestion, while heavy inference is distributed across independent Celery workers.
@@ -64,7 +64,7 @@ User Receives Result (Disease Name + Confidence) ✅
 
 ### 🛡️ Infrastructure Wins (Advanced Production Engineering)
 
-Strict Decoupling: The API image is stripped of TensorFlow, reducing its RAM footprint from 1.2GB to ~70MB per instance.
+Strict Decoupling: The API image is stripped of TensorFlow, reducing its RAM footprint per instance.
 
 Zero-Copy Handover: Uses Docker shared volumes for image transfer, preventing Redis memory bloat.
 
